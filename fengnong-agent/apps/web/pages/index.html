@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>农业智能助手</title>
+    <link rel="stylesheet" href="../styles/styles.css">
+    <link rel="stylesheet" href="../components/Timeline/styles.css">
+</head>
+<body>
+    <!-- 角色切换 -->
+    <div class="role-switcher">
+        <button class="role-btn role-farmer" data-role="farmer">👨‍🌾 农民端</button>
+        <button class="role-btn role-consumer" data-role="consumer">👨‍💼 消费者端</button>
+    </div>
+
+    <div class="container">
+        <!-- 左侧对话区 -->
+        <div class="chat-area">
+            <h2>💬 智能对话</h2>
+            <div class="chat-messages" id="chatMessages">
+                <div class="message ai-message">
+                    <strong>AI助手：</strong> 您好！我是农业智能助手，请问有什么可以帮您？
+                </div>
+            </div>
+            
+            <!-- 语音状态显示 -->
+            <div class="voice-status status-info" id="voiceStatus">
+                点击麦克风按钮开始语音输入
+            </div>
+            
+            <div class="input-area">
+                <button class="voice-btn" id="voiceButton">🎤</button>
+                <input type="text" id="messageInput" placeholder="请输入您的问题...">
+                <button id="sendButton">发送</button>
+            </div>
+        </div>
+
+        <!-- 右侧信息面板 -->
+        <div class="right-panel">
+            <!-- 结果摘要 -->
+            <div class="panel">
+                <h3>📊 结果摘要</h3>
+                <div id="summaryContent">
+                    <p>等待对话开始...</p>
+                </div>
+            </div>
+
+            <!-- 证据清单 -->
+            <div class="panel">
+                <h3>📋 证据清单</h3>
+                <div id="evidenceContent">
+                    <div class="evidence-item">暂无证据数据</div>
+                </div>
+            </div>
+
+            <!-- 时间线 -->
+            <div class="panel">
+                <div class="timeline-header">
+                    <h3>⏰ 时间线</h3>
+                    <div class="progress-info">
+                        <span class="progress-text" id="progressText">0/0 完成</span>
+                    </div>
+                </div>
+                <div class="timeline-content">
+                    <div id="timelineContent"></div>
+                </div>
+                <button class="download-btn" id="downloadButton">📥 下载待办清单</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 加载所有脚本 -->
+    <script type="module" src="../scripts/main.js"></script>
+</body>
+</html>
