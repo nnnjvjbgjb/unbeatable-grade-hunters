@@ -93,7 +93,7 @@ class MemoryService {
         last_conversation: conversation,
         conversation_history: [
           conversation,
-          ...(existing.conversation_history || []).slice(0, 9) // 保留最近10轮
+          ...(existing.conversation_history || []).slice(0, 9) // 保留最�?10�?
         ]
       };
       
@@ -106,26 +106,26 @@ class MemoryService {
   }
 }
 
-// ==================== 计划器 (Planner) ====================
+// ==================== 计划�? (Planner) ====================
 class Planner {
   static createPlan(query: string, userPreferences: Record<string, any>): ExecutionPlan {
     const lowerQuery = query.toLowerCase();
     const steps: PlanStep[] = [];
     let includeDisclaimer = false;
 
-    // 规则1: 天气驱动的种植提醒
+    // 规则1: 天气驱动的种植提�?
     if (this.isWeatherAdviceQuery(lowerQuery, userPreferences)) {
       includeDisclaimer = true;
       const city = this.extractCity(query) || userPreferences.region || '武汉';
       
       steps.push({
-        reason: '获取天气信息以提供种植建议',
+        reason: '获取天气信息以提供种植建�?',
         tool: 'weather.get_forecast',
         args: { city, days: 7 }
       });
       
       steps.push({
-        reason: '基于天气和作物信息生成农业建议',
+        reason: '基于天气和作物信息生成农业建�?',
         tool: 'agro.generate_advice',
         args: { 
           city,
@@ -141,7 +141,7 @@ class Planner {
       const maxPrice = this.extractPrice(query);
       
       steps.push({
-        reason: '搜索符合条件的商品',
+        reason: '搜索符合条件的商�?',
         tool: 'commerce.catalog_search',
         args: { 
           query: this.extractProductQuery(query),
@@ -153,17 +153,17 @@ class Planner {
       });
       
       steps.push({
-        reason: '为选中的商品生成订单草稿',
+        reason: '为选中的商品生成订单草�?',
         tool: 'commerce.create_order_draft',
         args: {
           buyer: userPreferences.userId || 'default_user',
-          items: [], // 将由执行器填充
+          items: [], // 将由执行器填�?
           address: `${region}市`
         }
       });
     }
     
-    // 规则3: 一键上架草稿
+    // 规则3: 一键上架草�?
     else if (this.isListingQuery(lowerQuery)) {
       const productInfo = this.extractProductInfo(query);
       
@@ -181,7 +181,7 @@ class Planner {
       });
     }
     
-    // 规则4: 作物日历和待办
+    // 规则4: 作物日历和待�?
     else if (this.isCropCalendarQuery(lowerQuery)) {
       includeDisclaimer = true;
       
@@ -199,7 +199,7 @@ class Planner {
     // 默认规则: 通用查询
     else {
       steps.push({
-        reason: '分析用户意图并寻找合适工具',
+        reason: '分析用户意图并寻找合适工�?',
         tool: 'general.analyze_intent',
         args: { query, user_preferences: userPreferences }
       });
@@ -211,7 +211,7 @@ class Planner {
       });
     }
 
-    // 确保不超过4步
+    // 确保不超�?4�?
     const finalSteps = steps.slice(0, 4);
     
     return {
@@ -233,17 +233,17 @@ class Planner {
   }
 
   private static isShoppingQuery(query: string): boolean {
-    const shoppingWords = ['买', '购买', '找', '搜索', '推荐', '订单', '番茄', '蔬菜', '水果'];
+    const shoppingWords = ['�?', '购买', '�?', '搜索', '推荐', '订单', '番茄', '蔬菜', '水果'];
     return shoppingWords.some(word => query.includes(word));
   }
 
   private static isListingQuery(query: string): boolean {
-    const listingWords = ['上架', '出售', '卖', '发布', '商品', '麻花', '鸡蛋', '箱'];
+    const listingWords = ['上架', '出售', '�?', '发布', '商品', '麻花', '鸡蛋', '�?'];
     return listingWords.some(word => query.includes(word));
   }
 
   private static isCropCalendarQuery(query: string): boolean {
-    const calendarWords = ['日历', '待办', '日程', '计划', '分蘖期', '播种', '施肥'];
+    const calendarWords = ['日历', '待办', '日程', '计划', '分蘖�?', '播种', '施肥'];
     return calendarWords.some(word => query.includes(word));
   }
 
@@ -259,38 +259,38 @@ class Planner {
   }
 
   private static extractGrowthStage(query: string): string {
-    if (query.includes('分蘖期')) return '分蘖期';
-    if (query.includes('播种')) return '播种期';
-    if (query.includes('收获')) return '成熟期';
-    return '生长期';
+    if (query.includes('分蘖�?')) return '分蘖�?';
+    if (query.includes('播种')) return '播种�?';
+    if (query.includes('收获')) return '成熟�?';
+    return '生长�?';
   }
 
   private static extractPrice(query: string): number | undefined {
-    const priceMatch = query.match(/(\d+(?:\.\d+)?)\s*元/);
+    const priceMatch = query.match(/(\d+(?:\.\d+)?)\s*�?/);
     return priceMatch ? parseFloat(priceMatch[1]) : undefined;
   }
 
   private static extractProductQuery(query: string): string {
-    // 提取商品关键词
+    // 提取商品关键�?
     const products = ['番茄', '鸡蛋', '麻花', '蔬菜', '水果', '大米'];
     const found = products.find(product => query.includes(product));
     return found || '商品';
   }
 
   private static extractProductInfo(query: string): { title: string; price: number; stock: number; description: string } {
-    const priceMatch = query.match(/(\d+)\s*元/);
-    const stockMatch = query.match(/(\d+)\s*箱/);
+    const priceMatch = query.match(/(\d+)\s*�?/);
+    const stockMatch = query.match(/(\d+)\s*�?/);
     
     return {
       title: this.extractProductQuery(query),
       price: priceMatch ? parseInt(priceMatch[1]) : 100,
       stock: stockMatch ? parseInt(stockMatch[1]) : 10,
-      description: '新鲜农产品'
+      description: '新鲜农产�?'
     };
   }
 }
 
-// ==================== 执行器 (Executor) ====================
+// ==================== 执行�? (Executor) ====================
 class Executor {
   private static circuitBreaker = new Map<string, { failures: number; lastFailure: number }>();
   private static readonly MAX_RETRIES = 2;
@@ -316,12 +316,12 @@ class Executor {
           throw new Error(`工具 ${step.tool} 暂时不可用（熔断状态）`);
         }
 
-        // 执行工具（带重试机制）
+        // 执行工具（带重试机制�?
         stepResult = await this.executeWithRetry(step, userId);
         
         // 沙盒写入校验
         if (stepResult.artifact && !this.validateSandboxWrite(stepResult.artifact)) {
-          throw new Error(`沙盒写入路径不合法: ${stepResult.artifact}`);
+          throw new Error(`沙盒写入路径不合�?: ${stepResult.artifact}`);
         }
         
         // 记录成功
@@ -369,7 +369,7 @@ class Executor {
         if (attempt === this.MAX_RETRIES) {
           throw error;
         }
-        // 等待后重试
+        // 等待后重�?
         await new Promise(resolve => setTimeout(resolve, 1000 * (attempt + 1)));
       }
     }
@@ -377,7 +377,7 @@ class Executor {
   }
 
   private static async executeSingleStep(step: PlanStep, userId?: string): Promise<ToolResult> {
-    // 模拟 MCP 工具调用 - 实际项目中这里会调用真实的 MCP 服务器
+    // 模拟 MCP 工具调用 - 实际项目中这里会调用真实�? MCP 服务�?
     return await this.withTimeout(
       this.mockToolCall(step, userId),
       this.TIMEOUT_MS,
@@ -412,7 +412,7 @@ class Executor {
         city: args.city,
         days: args.days,
         forecast: [
-          { date: '2024-01-20', condition: '晴', temp: '15-25°C' },
+          { date: '2024-01-20', condition: '�?', temp: '15-25°C' },
           { date: '2024-01-21', condition: '多云', temp: '16-26°C' }
         ],
         mock: true
@@ -430,7 +430,7 @@ class Executor {
         price: 7.5,
         origin: '武汉',
         tags: ['本地直发', '有机', '当季'],
-        premium: -6.25 // 比均价便宜6.25%
+        premium: -6.25 // 比均价便�?6.25%
       },
       {
         id: '2', 
@@ -509,9 +509,9 @@ class Executor {
 - 温度适宜，适合${args.crop}生长
 
 ## 种植建议
-1. 近期可进行追肥作业
+1. 近期可进行追肥作�?
 2. 注意田间水分管理
-3. 定期巡查病虫害情况
+3. 定期巡查病虫害情�?
 
 ## 免责声明
 本建议仅供参考，具体操作请咨询专业农技师。`;
@@ -529,17 +529,17 @@ class Executor {
   private static mockGetCropCalendar(args: any): ToolResult {
     const artifactPath = `apps/web/sandbox/notes/calendar-${Date.now()}.md`;
     
-    const calendar = `# ${args.crop} ${args.stage} 作物日历 - 未来${args.days}天
+    const calendar = `# ${args.crop} ${args.stage} 作物日历 - 未来${args.days}�?
 
 ## 每日待办清单
-- 第1天: 田间巡查，检查水分状况
-- 第2天: 追肥作业
-- 第3天: 病虫害预防
+- �?1�?: 田间巡查，检查水分状�?
+- �?2�?: 追肥作业
+- �?3�?: 病虫害预�?
 - ...
 
 ## 注意事项
 - 根据天气调整作业时间
-- 记录作业情况和效果
+- 记录作业情况和效�?
 
 ## 免责声明
 本日历仅供参考，具体操作请咨询专业农技师。`;
@@ -584,10 +584,10 @@ class Executor {
   // ==================== 工具方法 ====================
   private static validateStep(step: PlanStep): void {
     if (!step.tool || !step.reason) {
-      throw new Error('步骤缺少必要字段: tool 或 reason');
+      throw new Error('步骤缺少必要字段: tool �? reason');
     }
     
-    // 工具特定的参数校验
+    // 工具特定的参数校�?
     const validators: Record<string, (args: any) => void> = {
       'weather.get_forecast': (args) => {
         if (!args.city) throw new Error('缺少必要参数: city');
@@ -616,7 +616,7 @@ class Executor {
     const state = this.circuitBreaker.get(tool);
     if (!state) return false;
     
-    // 5分钟内失败3次以上则熔断
+    // 5分钟内失�?3次以上则熔断
     if (state.failures >= 3 && Date.now() - state.lastFailure < 300000) {
       return true;
     }
@@ -665,9 +665,9 @@ class Executor {
       'weather.get_forecast': (args, output) => 
         `获取${args.city}${args.days}天天气预报`,
       'commerce.catalog_search': (args, output) => 
-        `搜索"${args.query}"，找到${output.items?.length || 0}个商品`,
+        `搜索"${args.query}"，找�?${output.items?.length || 0}个商品`,
       'commerce.create_order_draft': (args, output) => 
-        `生成订单草稿，总金额${output.amount}元`,
+        `生成订单草稿，总金�?${output.amount}元`,
       'commerce.create_listing_draft': (args, output) => 
         `创建"${args.title}"上架草稿`,
       'agro.generate_advice': (args, output) => 
@@ -685,7 +685,7 @@ class Executor {
   }
 }
 
-// ==================== 回答生成器 ====================
+// ==================== 回答生成�? ====================
 class AnswerGenerator {
   static generateAnswer(
     query: string, 
@@ -696,10 +696,10 @@ class AnswerGenerator {
     const successfulSteps = timeline.filter(step => step.ok);
     
     if (successfulSteps.length === 0) {
-      return '抱歉，任务执行失败。请检查网络连接或稍后重试。';
+      return '抱歉，任务执行失败。请检查网络连接或稍后重试�?';
     }
 
-    // 根据任务类型生成不同的回答
+    // 根据任务类型生成不同的回�?
     if (plan.steps.some(step => step.tool === 'agro.generate_advice')) {
       const weatherResult = results.find(r => 
         timeline.find(t => t.name === 'weather.get_forecast' && t.ok)
@@ -708,8 +708,8 @@ class AnswerGenerator {
         timeline.find(t => t.name === 'agro.generate_advice' && t.ok)
       );
       
-      return `根据${weatherResult?.output?.city || '当地'}的天气情况，为您生成种植建议。建议已保存，请查看详细内容。${
-        plan.guardrails.include_disclaimer ? '\n\n免责声明：本建议仅供参考，具体操作请咨询专业农技师。' : ''
+      return `根据${weatherResult?.output?.city || '当地'}的天气情况，为您生成种植建议。建议已保存，请查看详细内容�?${
+        plan.guardrails.include_disclaimer ? '\n\n免责声明：本建议仅供参考，具体操作请咨询专业农技师�?' : ''
       }`;
     }
 
@@ -730,14 +730,14 @@ class AnswerGenerator {
         timeline.find(t => t.name === 'commerce.create_listing_draft' && t.ok)
       );
       
-      return '商品上架草稿已生成，请查看并确认信息后发布。';
+      return '商品上架草稿已生成，请查看并确认信息后发布�?';
     }
 
     if (plan.steps.some(step => step.tool === 'agro.get_crop_calendar')) {
-      return '作物日历和待办清单已生成，请查看详细安排。';
+      return '作物日历和待办清单已生成，请查看详细安排�?';
     }
 
-    return `已完成您的请求"${query}"。共执行${successfulSteps.length}个步骤，全部成功完成。`;
+    return `已完成您的请�?"${query}"。共执行${successfulSteps.length}个步骤，全部成功完成。`;
   }
 
   static collectEvidence(results: ToolResult[]): string[] {
@@ -769,18 +769,18 @@ class AnswerGenerator {
   }
 }
 
-// ==================== 主 Handler 函数 ====================
+// ==================== �? Handler 函数 ====================
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ChatResponse>
 ) {
-  // 设置响应头
+  // 设置响应�?
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
 
-  // 方法检查
+  // 方法检�?
   if (req.method !== 'POST') {
     return res.status(405).json({
-      answer: '只支持 POST 请求',
+      answer: '只支�? POST 请求',
       timeline: [],
       artifacts: [],
       evidence: []
@@ -808,7 +808,7 @@ export default async function handler(
       summary: '收到用户请求'
     });
 
-    // 1. 加载用户记忆和偏好
+    // 1. 加载用户记忆和偏�?
     const userPreferences = await MemoryService.loadUserPreferences(userId);
     timeline.push({
       name: 'memory_loaded',
@@ -830,10 +830,10 @@ export default async function handler(
     const { results, timeline: executionTimeline } = await Executor.executePlan(plan, userId);
     timeline.push(...executionTimeline);
 
-    // 4. 生成最终回答
+    // 4. 生成最终回�?
     const answer = AnswerGenerator.generateAnswer(query, plan, results, timeline);
     
-    // 5. 收集证据和产物
+    // 5. 收集证据和产�?
     const evidence = AnswerGenerator.collectEvidence(results);
     const artifacts = AnswerGenerator.collectArtifacts(results);
 
@@ -842,7 +842,7 @@ export default async function handler(
       await MemoryService.saveConversation(userId, query, plan, answer);
     }
 
-    // 7. 返回最终响应
+    // 7. 返回最终响�?
     const response: ChatResponse = {
       answer,
       timeline,
@@ -859,12 +859,12 @@ export default async function handler(
       name: 'error_occurred',
       ok: false,
       latency_ms: 0,
-      summary: '处理过程中发生错误',
+      summary: '处理过程中发生错�?',
       error: error instanceof Error ? error.message : '未知错误'
     }];
 
     res.status(500).json({
-      answer: '处理请求时发生错误，请稍后重试',
+      answer: '处理请求时发生错误，请稍后重�?',
       timeline: errorTimeline,
       artifacts: [],
       evidence: [`错误详情: ${error instanceof Error ? error.message : '未知错误'}`]
@@ -873,12 +873,12 @@ export default async function handler(
 }
 
 // ==================== 测试用例 ====================
-// 在浏览器控制台测试
+// 在浏览器控制台测�?
 const testQueries = [
   { query: '我在武汉种水稻，最近要不要施肥？有啥要注意的？', userId: 'farmer_001' },
-  { query: '找武汉本地直发的有机番茄，≤8元/斤，帮我生成订单草稿', userId: 'consumer_001' },
-  { query: '我有麻花鸡蛋100箱108/箱，今天上架，先生成草稿给我看', userId: 'farmer_002' },
-  { query: '我现在在种水稻（分蘖期），请为我生成未来两周的作物日历', userId: 'farmer_001' }
+  { query: '找武汉本地直发的有机番茄，≤8�?/斤，帮我生成订单草稿', userId: 'consumer_001' },
+  { query: '我有麻花鸡蛋100�?108/箱，今天上架，先生成草稿给我�?', userId: 'farmer_002' },
+  { query: '我现在在种水稻（分蘖期），请为我生成未来两周的作物日�?', userId: 'farmer_001' }
 ];
 
 // 测试函数
@@ -893,7 +893,7 @@ async function testQuery(testCase: { query: string; userId: string }) {
     const result = await response.json();
     console.log('测试结果:', testCase.query);
     console.log('回答:', result.answer);
-    console.log('时间线步骤:', result.timeline.length);
+    console.log('时间线步�?:', result.timeline.length);
     console.log('产物:', result.artifacts);
     console.log('证据:', result.evidence);
     console.log('---');
