@@ -13,7 +13,7 @@
 
 ↓↓↓↓ 下面是**项目 logo** ↓↓↓↓
 
-![image](../image.png)
+![image](./image.png)
 
 ## 2. 团队名称
 
@@ -43,3 +43,4 @@
             <th colspan="3">队长介绍</th>
         </tr>
         <tr>
+
