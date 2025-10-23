@@ -15,7 +15,7 @@
 
 ↓↓↓↓ 下面是**项目logo** ↓↓↓↓
 
-![img](file:///C:\Users\Lenovo\Documents\Tencent Files\1715707555\Image\Group2\F5\SD\F5SD%RK]RY40]W6[2F70$]3_tmb.png)
+![image](D:\alltask_school\SoftwareProject\image.png)
 
 ## 2. 团队名称
 
@@ -46,4 +46,3 @@
             <th colspan="3">队长介绍</th>
         </tr>
         <tr>
-
